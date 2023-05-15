@@ -8,8 +8,7 @@ Ofek Zavaro, ID- 319099677 <br>
 [jira](https://adimor.atlassian.net/jira/software/projects/BS/boards/1/roadmap)
 
 ## Gantt
-
-![GanttBS](https://github.com/ShaniYaish/BookScrabbleGame/assets/112093964/ec62355d-712f-4354-942f-5fa238a20708)
+![GanttBS](https://github.com/ShaniYaish/BookScrabbleGame/assets/112093964/a5c7eedc-78a2-423a-929f-7fbdd0eeddc8)
 
 ## Instructions:
 When playing Scrabble, the number of participants is between two and four.<br> The object when playing is to score more points than other players.<br> As words are placed on the game board, points are collected and each letter that is used in the game will have a different point value.<br> The main strategy is to play words that have the highest possible score based on the combination of letters.
