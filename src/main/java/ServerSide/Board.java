@@ -350,6 +350,7 @@ public class Board {
         }
         return sumPlaceWord;
     }
+
     public class Square{
         int colorSquare;
         Tile t;

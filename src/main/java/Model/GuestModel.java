@@ -1,5 +1,7 @@
 package Model;
 
+import ServerSide.Word;
+
 public class GuestModel implements Model {
     @Override
     public void start_game() {
@@ -7,7 +9,7 @@ public class GuestModel implements Model {
     }
 
     @Override
-    public void end_turn() {
+    public void end_turn(Word word) {
 
     }
 
@@ -16,10 +18,6 @@ public class GuestModel implements Model {
 
     }
 
-    @Override
-    public void go_back() {
-
-    }
 
     @Override
     public void challenge(Player challenger) {

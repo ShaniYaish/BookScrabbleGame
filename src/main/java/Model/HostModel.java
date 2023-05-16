@@ -2,6 +2,7 @@ package Model;
 
 import ServerSide.Board;
 import ServerSide.Tile;
+import ServerSide.Word;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,21 +20,33 @@ public class HostModel implements Model {
         this.bag = null;
         this.currentPlayerIndex = 0;
     }
+
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
+    }
+
     @Override
     public void start_game() {
         this.board = Board.getBoard();
         this.bag = Tile.Bag.getBag();
         create_players_order();
 
-        /*
         // Give each player 7 tiles from the bag
-        for (Player player : players) {
-            List<Tile> tiles = bag.drawTiles(7);
-            player.addTiles(tiles);
+        for (int indexPlayer=0 ; indexPlayer < 4 ; indexPlayer++) {
+            divide_tiles(indexPlayer);
         }
-        */
-
     }
+
+
     public void create_players_order(){
         for (Player player : players) {
             player.add_tile();
@@ -45,22 +58,34 @@ public class HostModel implements Model {
             }
         });
         for (Player player : players){
-            Tile.Bag.getBag().put(player.getPlayer_tiles().get(0));
+            bag.put(player.getPlayer_tiles().get(0));
             player.getPlayer_tiles().remove(0);
         }
     }
-    public void end_turn() {
 
+    public void divide_tiles(int indexOfPlayer) {
+        int numOfTiles = players.get(indexOfPlayer).getPlayer_tiles().size();
+        if (numOfTiles < 7) {
+            for (int i = 0; i < 7 - numOfTiles; i++) {
+                players.get(indexOfPlayer).add_tile();
+            }
+        }
+    }
+
+
+    @Override
+    public void end_turn(Word word) {
+       int score = board.tryPlaceWord(word);
+       players.get(currentPlayerIndex).update_score(score);
+       divide_tiles(currentPlayerIndex);
+
+       setCurrentPlayerIndex((this.currentPlayerIndex+1)%3);
     }
 
     @Override
     public void pass_turn() {
-
-    }
-
-    @Override
-    public void go_back() {
-
+        players.get(currentPlayerIndex).add_tile();
+        setCurrentPlayerIndex((this.currentPlayerIndex+1)%3);
     }
 
     @Override
@@ -72,9 +97,7 @@ public class HostModel implements Model {
 
     }
     //help function for end turn
-    public int update_score(){
-        return 0;
-    }
+
     public void time_out(){}
     public void add_player(int gameId,Player player){}
 }

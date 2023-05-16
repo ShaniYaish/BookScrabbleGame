@@ -11,10 +11,16 @@ public class Player {
     private String player_name;
     private int score;
 
+
     public Player(String name){
         this.player_tiles= new ArrayList<>();
         this.player_name= name;
         this.score=0;
+    }
+
+
+    public void update_score(int score) {
+        this.score+= score;
     }
 
     public void add_tile(){
