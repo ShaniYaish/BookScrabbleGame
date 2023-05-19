@@ -2,7 +2,10 @@ package Model;
 
 import ServerSide.Word;
 
+import java.net.Socket;
+
 public class GuestModel implements Model {
+    Socket socket;
     @Override
     public void start_game() {
 
@@ -18,11 +21,11 @@ public class GuestModel implements Model {
 
     }
 
-
+    /*
     @Override
     public void challenge(Player challenger) {
 
-    }
+    }*/
 
     public void join_game() {
 
