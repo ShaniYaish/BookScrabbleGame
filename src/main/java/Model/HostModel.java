@@ -4,10 +4,8 @@ import ServerSide.*;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class HostModel implements Model {//hostmodele
     private List<Player> players;
@@ -16,27 +14,21 @@ public class HostModel implements Model {//hostmodele
     private int currentPlayerIndex;
 
     //client of server - members
-    private Socket socket;
-    private BufferedReader reader;
-    private PrintWriter writer;
-    private BookScrabbleHandler  book_handler;
+    private Socket bookScrabbleSocket;
+    private MyServer bookScrabbleServer;
 
 
     //server of guests - members
-    private MyServer host_server;
-    private GuestModelHandler guest_model_handler;
+    private MyServer hostServer;
 
-    private String my_IP;
-    private int port;
 
     public HostModel() {
+        bookScrabbleServer = new MyServer(3000, new BookScrabbleHandler());
+        bookScrabbleServer.start();
+        connectToBookScrabbleServer("localhost", 3000);
 
-
-
-       /* guest_model_handler = new GuestModelHandler();
-        host_server = new MyServer(3001, book_handler);
-        host_server.start();*/
-
+        hostServer = new MyServer(3001, new GuestHandler(this));
+        hostServer.start();
 
         this.players = new ArrayList<>();
         this.board = null;
@@ -44,42 +36,63 @@ public class HostModel implements Model {//hostmodele
         this.currentPlayerIndex = 0;
     }
 
-    public void connectToServer(String serverAddress , int serverPort) {
+
+    public void connectToBookScrabbleServer(String serverAddress, int serverPort) {
         //Connect to the server
         try {
-            socket = new Socket(serverAddress, serverPort);
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new PrintWriter(socket.getOutputStream(), true);
+            bookScrabbleSocket = new Socket(serverAddress, serverPort);
         } catch (
                 IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendDataToServer(String message) {
-        writer.println(message);
+    public Player getPlayerByName(String playerName) {
+        Player player = players.stream()
+                .filter(item -> item.getPlayer_name().equals(playerName))
+                .collect(Collectors.toList()).get(0);
+        return player;
     }
 
-    public String receiveDataFromServer() {
+    public List<Tile> getTilesFromPlayerBag(String playerName, String word) {
+        Player player = getPlayerByName(playerName);
+        return player.getWordTiles(word);
+    }
+
+    public void removeTilesFromPlayerBag(String playerName, String word) {
+        Player player = getPlayerByName(playerName);
+        player.removeWordFromTiles(word);
+    }
+
+    public void sendDataToBookScrabbleServer(String message) {
         try {
-            return reader.readLine();
+            PrintWriter outToServer = new PrintWriter(bookScrabbleSocket.getOutputStream());
+            outToServer.println(message);
+            outToServer.flush();
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
+    }
+
+    public String receiveDataFromBookScrabbleServer() {
+        try {
+            Scanner in = new Scanner(bookScrabbleSocket.getInputStream());
+            String response = in.next();
+            in.close();
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void closeConnection() {
         try {
-            socket.close();
-            reader.close();
-            writer.close();
+            bookScrabbleSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 
 
     public List<Player> getPlayers() {
@@ -105,6 +118,9 @@ public class HostModel implements Model {//hostmodele
         }
     }
 
+    public void addPlayer(Player player) { //(button + / guest connected)
+        players.add(player);
+    }
 
     public void create_players_order() {
         for (Player player : players) {
@@ -132,58 +148,43 @@ public class HostModel implements Model {//hostmodele
     }
 
     @Override
-    public void end_turn(Word word, boolean chal) {
-        //if(chal)
-        //validate word
-        // create inputstream with the word.
-        // create OutputStream for result.
-        //book_handler.handleClient();
-        //wait for OutputStream;
-        String message = createMessage(word,chal);
-        sendDataToServer(message);
-
-        boolean flag;
-
-        try {
-            InputStream in = socket.getInputStream();
-            OutputStream out = socket.getOutputStream();
-            book_handler.handleClient(in , out);
-//            PrintWriter writer1 = new PrintWriter(out);
-//            boolean result = Boolean.parseBoolean(out.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public boolean end_turn(Word word, boolean challenge) {
+        String message = createMessage(word, challenge);
+        sendDataToBookScrabbleServer(message);
+        String result = receiveDataFromBookScrabbleServer();
+        boolean isInDictionary = result == "true" ? true : false;
+        if (!isInDictionary) {
+            //return message try again
+            //return the tiles for the first position
+            return false;
         }
-
-
         int score = board.tryPlaceWord(word);
         if (score == 0) {
             //send message try again
-            //return the tiles for the first position
-            return;
+            return false;
         }
-
-        //handelClient func(?)
         //the host need to notify to the guests to put the word on the bord
+        // not current player and isGuest;
         players.get(currentPlayerIndex).update_score(score);
         divide_tiles(currentPlayerIndex);
         setCurrentPlayerIndex((this.currentPlayerIndex + 1) % 3);
-
         if (bag.size() == 0) {
             end_game();
         }
-
-        //update guests
-        //add word to board
-        // create inputstream with the word.
-        // create OutputStream for result.
-        //guest_model_handler.handleClient();
-        //wait for OutputStream;
+        return true;
     }
 
     @Override
     public void pass_turn() {
         players.get(currentPlayerIndex).add_tile();
         setCurrentPlayerIndex((this.currentPlayerIndex + 1) % 3);
+    }
+
+    public void notifyCurrentPlayer() {
+        // loop on Guest sockets
+    }
+    public void notifyAddWord() {
+        // loop on Guest sockets
     }
 
     /*
@@ -205,25 +206,18 @@ public class HostModel implements Model {//hostmodele
         players.add(player);
     }
 
-    public String createMessage(Word word , boolean chal){
-        String mess = "";
+    public String createMessage(Word word, boolean challenge) {
+        String message = challenge ? "C," : "Q,";
         String w = "";
-        for(int i=0; i<word.getTiles().length ; i++)
-        {
-            w+= word.getTiles()[i].letter;
-        }
 
-        if(chal)
-        {
-            mess +="C,";
+        for (int i = 0; i < word.getTiles().length; i++) {
+            w += word.getTiles()[i].letter;
         }
-        else
-            mess +="Q,";
 
         //add the name of the books
 
-        mess+=w;
+        message += ",book1,book2,book3," + w;
 
-        return mess;
+        return message;
     }
 }

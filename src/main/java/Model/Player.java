@@ -2,6 +2,7 @@ package Model;
 
 import ServerSide.Tile;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,21 +11,24 @@ public class Player {
     private List<Tile> player_tiles;
     private String player_name;
     private int score;
+    private boolean isGuest;
+    private Socket guestSocket;
 
 
-    public Player(String name){
-        this.player_tiles= new ArrayList<>();
-        this.player_name= name;
-        this.score=0;
+    public Player(String name) {
+        this.player_tiles = new ArrayList<>();
+        this.player_name = name;
+        this.isGuest = false;
+        this.score = 0;
     }
 
 
     public void update_score(int score) {
-        this.score+= score;
+        this.score += score;
     }
 
-    public void add_tile(){
-        Tile tile= Tile.Bag.getBag().getRand();
+    public void add_tile() {
+        Tile tile = Tile.Bag.getBag().getRand();
         this.player_tiles.add(tile);
     }
 
@@ -32,11 +36,48 @@ public class Player {
         return player_tiles;
     }
 
+    public void removeWordFromTiles(String word) {
+        if (word == null) return;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            //find tile in player_tiles
+            //remove tile from player_tiles
+        }
+    }
+    public List<Tile> getWordTiles(String word) {
+        if (word == null) return null;
+        List<Tile> tiles = new ArrayList<>();
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            //find tile in player_tiles
+            //add tile to tiles
+        }
+        return tiles;
+    }
+
+
     public String getPlayer_name() {
         return player_name;
     }
 
     public int getScore() {
         return score;
+    }
+
+
+    public boolean isGuest() {
+        return isGuest;
+    }
+
+    public void setGuest(boolean guest) {
+        isGuest = guest;
+    }
+
+    public Socket getGuestSocket() {
+        return guestSocket;
+    }
+
+    public void setGuestSocket(Socket guestSocket) {
+        this.guestSocket = guestSocket;
     }
 }
