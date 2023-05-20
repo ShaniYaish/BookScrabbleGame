@@ -1,5 +1,6 @@
 package Model;
 
+import ServerSide.Board;
 import ServerSide.Word;
 
 import java.io.IOException;
@@ -11,12 +12,14 @@ import java.util.Scanner;
 public class GuestModel implements Model {
 
     Socket socket;
+    private Board board;
+    private String playerName;
 
-
-    GuestModel() {
-        //update host that the guest is connected (send the name)
-
+    public GuestModel(String playerName) {
+        this.board=Board.getBoard();
+        this.playerName=playerName;
     }
+
 
     public void start_game(String host) {
         try {
@@ -25,7 +28,8 @@ public class GuestModel implements Model {
             throw new RuntimeException(e);
         }
         // connect
-        String command = "";
+        //"<guestName>,<function>,<data>,<data>,<data>.."
+        String command = playerName+",connect,"+host+",3001";
         String response = sendCommand(command);
 
     }
@@ -51,9 +55,9 @@ public class GuestModel implements Model {
     }
 
     @Override
-    public boolean end_turn(Word word, boolean chal) {
+    public boolean end_turn(Word word, boolean challenge) {
         // endTurn
-        String command = "";
+        String command = playerName+","+"endTurn,"+word+","+word.getRow()+","+word.getCol()+","+word.isVertical()+","+challenge;
         String response = sendCommand(command);
         boolean isOK = Boolean.parseBoolean(response);
         return isOK;
@@ -62,7 +66,7 @@ public class GuestModel implements Model {
     @Override
     public void pass_turn() {
         //passTurn
-        String command = "";
+        String command = playerName+","+"passTurn";
         String response = sendCommand(command);
     }
 

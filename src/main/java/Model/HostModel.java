@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class HostModel implements Model {//hostmodele
+public class HostModel implements Model {
     private List<Player> players;
     private Board board;
     private Tile.Bag bag;
@@ -29,6 +29,7 @@ public class HostModel implements Model {//hostmodele
 
         hostServer = new MyServer(3001, new GuestHandler(this));
         hostServer.start();
+
 
         this.players = new ArrayList<>();
         this.board = null;
@@ -185,12 +186,12 @@ public class HostModel implements Model {//hostmodele
     }
     public void notifyAddWord() {
         // loop on Guest sockets
+        for(Player p :players){
+            if(p.isGuest()){
+                //p.getGuestSocket()
+            }
+        }
     }
-
-    /*
-    @Override
-    public void challenge(Player challenger) {
-    }*/
 
 
     //declared the winner
@@ -202,9 +203,6 @@ public class HostModel implements Model {//hostmodele
         //is it func of the view layer ?
     }
 
-    public void add_player(int gameId, Player player) {
-        players.add(player);
-    }
 
     public String createMessage(Word word, boolean challenge) {
         String message = challenge ? "C," : "Q,";

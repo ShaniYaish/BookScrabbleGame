@@ -66,8 +66,6 @@ public class GuestHandler implements ClientHandler {
            // writer.println(tile.getLetter());//send all tiles
             writer.flush();
         }
-
-
         scanner.close();
         writer.close();
     }
