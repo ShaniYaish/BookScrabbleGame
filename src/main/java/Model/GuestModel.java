@@ -5,14 +5,21 @@ import ServerSide.Word;
 import java.net.Socket;
 
 public class GuestModel implements Model {
+
     Socket socket;
+
+    GuestModel(){
+        //update host that the guest is connected (send the name)
+
+    }
     @Override
     public void start_game() {
+        // send
 
     }
 
     @Override
-    public void end_turn(Word word) {
+    public void end_turn(Word word, boolean chal) {
 
     }
 
