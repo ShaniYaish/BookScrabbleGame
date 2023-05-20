@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class HostModel implements Model {
+public class HostModel implements Model {//hostmodele
     private List<Player> players;
     private Board board;
     private Tile.Bag bag;
