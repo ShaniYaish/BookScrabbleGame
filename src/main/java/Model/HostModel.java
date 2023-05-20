@@ -2,35 +2,40 @@ package Model;
 
 import ServerSide.*;
 
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class HostModel implements Model {
+public class HostModel implements Model {//hostmodele
     private List<Player> players;
     private Board board;
     private Tile.Bag bag;
     private int currentPlayerIndex;
-    private MyServer book_scrabble_server;
-    private BookScrabbleHandler book_handler;
 
+    //client of server - members
+    private Socket socket;
+    private BufferedReader reader;
+    private PrintWriter writer;
+    private BookScrabbleHandler  book_handler;
+
+
+    //server of guests - members
     private MyServer host_server;
     private GuestModelHandler guest_model_handler;
 
-    private Socket socket;
     private String my_IP;
     private int port;
 
     public HostModel() {
-        book_handler = new BookScrabbleHandler();
-        book_scrabble_server = new MyServer(3000, book_handler);
-        book_scrabble_server.start();
 
-        guest_model_handler = new GuestModelHandler();
+
+
+       /* guest_model_handler = new GuestModelHandler();
         host_server = new MyServer(3001, book_handler);
-        host_server.start();
+        host_server.start();*/
 
 
         this.players = new ArrayList<>();
@@ -39,9 +44,43 @@ public class HostModel implements Model {
         this.currentPlayerIndex = 0;
     }
 
-    public void run_socket() {
-        //open the socket, connect to the port from myserver last semester
+    public void connectToServer(String serverAddress , int serverPort) {
+        //Connect to the server
+        try {
+            socket = new Socket(serverAddress, serverPort);
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(socket.getOutputStream(), true);
+        } catch (
+                IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    public void sendDataToServer(String message) {
+        writer.println(message);
+    }
+
+    public String receiveDataFromServer() {
+        try {
+            return reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void closeConnection() {
+        try {
+            socket.close();
+            reader.close();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     public List<Player> getPlayers() {
         return players;
@@ -94,12 +133,26 @@ public class HostModel implements Model {
 
     @Override
     public void end_turn(Word word, boolean chal) {
-        //if(chal )
+        //if(chal)
         //validate word
         // create inputstream with the word.
         // create OutputStream for result.
         //book_handler.handleClient();
         //wait for OutputStream;
+        String message = createMessage(word,chal);
+        sendDataToServer(message);
+
+        boolean flag;
+
+        try {
+            InputStream in = socket.getInputStream();
+            OutputStream out = socket.getOutputStream();
+            book_handler.handleClient(in , out);
+//            PrintWriter writer1 = new PrintWriter(out);
+//            boolean result = Boolean.parseBoolean(out.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
         int score = board.tryPlaceWord(word);
@@ -137,6 +190,8 @@ public class HostModel implements Model {
     @Override
     public void challenge(Player challenger) {
     }*/
+
+
     //declared the winner
     public void end_game() {
         Collections.sort(players, (p1, p2) -> p2.getScore() - p1.getScore());
@@ -148,5 +203,27 @@ public class HostModel implements Model {
 
     public void add_player(int gameId, Player player) {
         players.add(player);
+    }
+
+    public String createMessage(Word word , boolean chal){
+        String mess = "";
+        String w = "";
+        for(int i=0; i<word.getTiles().length ; i++)
+        {
+            w+= word.getTiles()[i].letter;
+        }
+
+        if(chal)
+        {
+            mess +="C,";
+        }
+        else
+            mess +="Q,";
+
+        //add the name of the books
+
+        mess+=w;
+
+        return mess;
     }
 }
