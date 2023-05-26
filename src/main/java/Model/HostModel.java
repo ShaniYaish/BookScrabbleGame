@@ -164,7 +164,8 @@ public class HostModel implements Model {
             //send message try again
             return false;
         }
-        //the host need to notify to the guests to put the word on the bord
+        // call notifyState
+
         // not current player and isGuest;
         players.get(currentPlayerIndex).update_score(score);
         divide_tiles(currentPlayerIndex);
@@ -181,16 +182,24 @@ public class HostModel implements Model {
         setCurrentPlayerIndex((this.currentPlayerIndex + 1) % 3);
     }
 
-    public void notifyCurrentPlayer() {
-        // loop on Guest sockets
-    }
-    public void notifyAddWord() {
+    public void notifyState(Word word) {
+        //the host need to notify to the guests to put the word on the bord
+        GameState gameState=new GameState(players,players.get(currentPlayerIndex).getPlayer_name(),word);
+        //loop of players socket to send them massage
+        //"<function>,<data>,<data>,<data>.."
+        //"updateGameState,gameState.toString()"
+
         // loop on Guest sockets
         for(Player p :players){
             if(p.isGuest()){
                 //p.getGuestSocket()
             }
         }
+
+    }
+    public void updateGameState(){
+
+
     }
 
 
