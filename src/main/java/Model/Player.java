@@ -36,12 +36,16 @@ public class Player {
         return player_tiles;
     }
 
+    //find tile in player_tiles remove tile from player_tiles
     public void removeWordFromTiles(String word) {
         if (word == null) return;
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            //find tile in player_tiles
-            //remove tile from player_tiles
+            for(Tile tile :player_tiles){
+                if(tile.getLetter() == c){
+                    player_tiles.remove(tile);
+                }
+            }
         }
     }
     public List<Tile> getWordTiles(String word) {
@@ -49,8 +53,8 @@ public class Player {
         List<Tile> tiles = new ArrayList<>();
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            //find tile in player_tiles
-            //add tile to tiles
+            Tile tile= Tile.Bag.getBag().getTile(c);
+            tiles.add(tile);
         }
         return tiles;
     }
