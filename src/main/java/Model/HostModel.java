@@ -165,8 +165,8 @@ public class HostModel implements Model {
             return false;
         }
         // call notifyState
+        notifyState(word);
 
-        // not current player and isGuest;
         players.get(currentPlayerIndex).update_score(score);
         divide_tiles(currentPlayerIndex);
         setCurrentPlayerIndex((this.currentPlayerIndex + 1) % 3);
@@ -183,7 +183,7 @@ public class HostModel implements Model {
     }
 
     public void notifyState(Word word) {
-        //the host need to notify to the guests to put the word on the bord
+        //the host need to notify to the guests for updates after every turn
         GameState gameState=new GameState(players,players.get(currentPlayerIndex).getPlayer_name(),word);
         //loop of players socket to send them massage
         //"<function>,<data>,<data>,<data>.."

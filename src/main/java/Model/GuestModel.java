@@ -1,6 +1,7 @@
 package Model;
 
 import ServerSide.Board;
+import ServerSide.MyServer;
 import ServerSide.Word;
 
 import java.io.IOException;
@@ -11,37 +12,26 @@ import java.util.Scanner;
 
 public class GuestModel implements Model {
 
-    Socket socket;
+
+    private Socket Socket;
     private Board board;
     private String playerName;
+
 
     public GuestModel(String playerName) {
         this.board=Board.getBoard();
         this.playerName=playerName;
     }
 
-
-    public void start_game(String host) {
-        try {
-            socket = new Socket(host, 3001);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        // connect
-        //"<guestName>,<function>,<data>,<data>,<data>.."
-        String command = playerName+",connect,"+host+",3001";
-        String response = sendCommand(command);
-
-    }
-
+    //send orders to the hostServer
     public String sendCommand(String command) {
         try {
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            PrintWriter writer = new PrintWriter(Socket.getOutputStream());
             //"<guestName>,<function>,<data>,<data>,<data>.."
             writer.println(command);
             writer.flush();
 
-            Scanner scanner = new Scanner(new InputStreamReader(socket.getInputStream()));
+            Scanner scanner = new Scanner(new InputStreamReader(Socket.getInputStream()));
             String response = scanner.nextLine();
 
             writer.close();
@@ -54,6 +44,18 @@ public class GuestModel implements Model {
 
     }
 
+    public void start_game(String host) {
+        try {
+            Socket = new Socket(host, 3001);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // connect
+        //"<guestName>,<function>,<data>,<data>,<data>.."
+        String command = playerName+",connect,"+host+",3001";
+        String response = sendCommand(command);
+
+    }
     @Override
     public boolean end_turn(Word word, boolean challenge) {
         // endTurn
@@ -69,6 +71,38 @@ public class GuestModel implements Model {
         String command = playerName+","+"passTurn";
         String response = sendCommand(command);
     }
+
+    //connection to the hostServer to listen to updates
+    /*
+    public void connectToHostServer(String serverAddress, int serverPort) {
+        try {
+            hostSocket = new Socket(serverAddress, serverPort);
+        } catch (
+                IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public String receiveDataFromHostServer() {
+        try {
+            Scanner in = new Scanner(bookScrabbleSocket.getInputStream());
+            String response = in.next();
+            in.close();
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void closeConnection() {
+        try {
+            bookScrabbleSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+     */
 
 
 }
