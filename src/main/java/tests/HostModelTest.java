@@ -37,7 +37,7 @@ public class HostModelTest {
 
 
     /*public void getTilesFromPlayerBag() {
-        List<Tile> tiles = hostModel.getTilesFromPlayerBag("Bob", "BLOOM");
+        List<Tile> tiles = hostModel.getTilesFromPlayerBag("Bob", "AB");
         if(tiles == null)
             System.out.println("HostModelTest.getTilesFromPlayerBag: failed");
     }*/
