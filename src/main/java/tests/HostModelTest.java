@@ -14,10 +14,9 @@ public class HostModelTest {
     }
 
 
-    static HostModel hostModel;
+    static HostModel hostModel = new HostModel();
 
     public void HostModelTest() {
-        HostModel hostModel = new HostModel();
 
         // Add some players
         Player player1 = new Player("Alice");
@@ -26,7 +25,7 @@ public class HostModelTest {
         hostModel.getPlayers().add(player2);
 
         getPlayerByName();
-        //getTilesFromPlayerBag();
+        getTilesFromPlayerBag();
     }
 
 
@@ -36,11 +35,11 @@ public class HostModelTest {
     }
 
 
-    /*public void getTilesFromPlayerBag() {
+    public void getTilesFromPlayerBag() {
         List<Tile> tiles = hostModel.getTilesFromPlayerBag("Bob", "AB");
         if(tiles == null)
             System.out.println("HostModelTest.getTilesFromPlayerBag: failed");
-    }*/
+    }
 
 
 }
