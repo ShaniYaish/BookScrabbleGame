@@ -20,7 +20,7 @@ class PlayerTest {
     private void PlayerTest() {
         player = new Player("Alice");
         update_score();
-        //removeWordFromTiles();
+        removeWordFromTiles();
         add_tile();
         getWordTiles();
     }
@@ -40,7 +40,7 @@ class PlayerTest {
         }
     }
 
-    /*public static void removeWordFromTiles() {
+    public static void removeWordFromTiles() {
         String word= "AB";
         player.getPlayer_tiles().add(Tile.Bag.getBag().getTile('A'));
         player.getPlayer_tiles().add(Tile.Bag.getBag().getTile('B'));
@@ -49,7 +49,7 @@ class PlayerTest {
             System.out.println("Failed");
         }
 
-    }*/
+    }
 
 
     public static void getWordTiles() {

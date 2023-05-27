@@ -208,9 +208,6 @@ public class HostModel implements Model {
         Collections.sort(players, (p1, p2) -> p2.getScore() - p1.getScore());
     }
 
-    public void time_out() {
-        //is it func of the view layer ?
-    }
 
 
     public String createMessage(Word word, boolean challenge) {
@@ -223,7 +220,7 @@ public class HostModel implements Model {
 
         //add the name of the books
 
-        message += ",book1,book2,book3," + w;
+        message += "book1,book2,book3," + w;
 
         return message;
     }

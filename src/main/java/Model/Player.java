@@ -44,6 +44,8 @@ public class Player {
             for(Tile tile :player_tiles){
                 if(tile.getLetter() == c){
                     player_tiles.remove(tile);
+                    if(player_tiles.size() == 0)
+                        return;
                 }
             }
         }
