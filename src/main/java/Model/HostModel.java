@@ -21,6 +21,8 @@ public class HostModel implements Model {
     //server of guests - members
     private MyServer hostServer;
 
+    private Socket hostSocket;
+
 
     public HostModel() {
         bookScrabbleServer = new MyServer(3000, new BookScrabbleHandler());
@@ -48,6 +50,15 @@ public class HostModel implements Model {
         }
     }
 
+    public void connectToGuestServer(String serverAddress, int serverPort) {
+        //Connect to the server
+        try {
+            hostSocket = new Socket(serverAddress, serverPort);
+        } catch (
+                IOException e) {
+            e.printStackTrace();
+        }
+    }
     public Player getPlayerByName(String playerName) {
         Player player = players.stream()
                 .filter(item -> item.getPlayer_name().equals(playerName))

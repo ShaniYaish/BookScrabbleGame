@@ -14,6 +14,7 @@ public class GuestModel implements Model {
 
 
     private Socket Socket;
+    private MyServer guestServer;
     private Board board;
     private String playerName;
 
@@ -21,6 +22,9 @@ public class GuestModel implements Model {
     public GuestModel(String playerName) {
         this.board=Board.getBoard();
         this.playerName=playerName;
+
+        //guestServer = new MyServer(3002, new HostHandler(new GameState()));
+        guestServer.start();
     }
 
     //send orders to the hostServer
