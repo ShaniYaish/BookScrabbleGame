@@ -12,6 +12,9 @@ import java.util.Scanner;
 public class GuestHandler implements ClientHandler {
     HostModel host;
 
+    Scanner scanner;
+    PrintWriter writer;
+
     public GuestHandler(HostModel host) {
         this.host = host;
     }
@@ -19,14 +22,14 @@ public class GuestHandler implements ClientHandler {
     @Override
     public void handleClient(InputStream inFromclient, OutputStream outToClient) {
         // implement
-        Scanner scanner = new Scanner(new InputStreamReader(inFromclient));
-        PrintWriter writer = new PrintWriter(outToClient);
+        scanner = new Scanner(new InputStreamReader(inFromclient));
+        writer = new PrintWriter(outToClient);
         String[] command = scanner.nextLine().split(","); //"<guestName>,<function>,<data>,<data>,<data>.."
         String playerName = command[0];
         String function = command[1];
 
         if (function == "connect") { // selected guest mode
-            Player newPlayer = new Player(playerName , true);
+            Player newPlayer = new Player(playerName, true);
             newPlayer.setGuest(true);
             String guestHost = command[2]; // ip
             int port = Integer.parseInt(command[3]);
@@ -63,15 +66,16 @@ public class GuestHandler implements ClientHandler {
             host.pass_turn();
             Player player = host.getPlayerByName(playerName);
             player.getPlayer_tiles();
-           // writer.println(tile.getLetter());//send all tiles
+            // writer.println(tile.getLetter());//send all tiles
             writer.flush();
         }
-        scanner.close();
-        writer.close();
+        //scanner.close();
+        //writer.close();
     }
 
     @Override
     public void close() {
-
+        scanner.close();
+        writer.close();
     }
 }
