@@ -5,27 +5,20 @@ import ServerSide.Board;
 import ServerSide.Tile;
 import ServerSide.Word;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
     private List<Player> players;
-    private Board board;
     private String currentPlayerName;
     private Word lastAddedWord;
 
     public GameState(List<Player> players, String currentPlayerName, Word lastAddedWord) {
         this.players = players;
         this.currentPlayerName = currentPlayerName;
-        this.board = Board.getBoard();
         this.lastAddedWord = lastAddedWord;
         // consider creating a singleton and update the state on every move
     }
-
-    /*public GameState(String gameState) {
-        //create the object
-        //split...
-        //<currentPlayerName>#<playerName1:score1>,<playerName2:score2>#<lastWord, row, col, vertical>
-    }*/
 
     public String toString() {
 

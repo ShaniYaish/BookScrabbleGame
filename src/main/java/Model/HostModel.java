@@ -85,6 +85,15 @@ public class HostModel implements Model {
             throw new RuntimeException(e);
         }
     }
+    public void sendDataToGustServer(String message) {
+        try {
+            PrintWriter outToServer = new PrintWriter(hostSocket.getOutputStream());
+            outToServer.println(message);
+            outToServer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String receiveDataFromBookScrabbleServer() {
         try {
@@ -200,6 +209,10 @@ public class HostModel implements Model {
         //loop of players socket to send them massege
         for(Player player : players)
         {
+           // hostSocket = new Socket(, 3002);
+            Socket socket = player.getGuestSocket();
+           // sendDataToGustServer()
+           // socket.getInputStream(gameState.toString());
 
         }
         //"<function>,<data>,<data>,<data>.."
@@ -211,12 +224,6 @@ public class HostModel implements Model {
                 //p.getGuestSocket()
             }
         }
-
-    }
-
-
-    public void updateGameState(){
-
 
     }
 

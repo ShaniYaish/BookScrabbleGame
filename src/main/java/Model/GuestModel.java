@@ -19,12 +19,14 @@ public class GuestModel implements Model {
     private Board board;
     private String playerName;
     private GameState gameState;
+   // private String serverIP;
 
 
     public GuestModel(String playerName) {
         this.board=Board.getBoard();
         this.playerName=playerName;
         this.gameState= null;
+       // this.serverIP="localhost";
 
         guestServer = new MyServer(3002, new HostHandler(this));
         guestServer.start();
@@ -79,8 +81,13 @@ public class GuestModel implements Model {
         String response = sendCommand(command);
     }
 
-    public void updateGameState(String currentNamePlayer, Map<String,Integer> playerScore, String word){
+    public void updateGameState(String currentNamePlayer, Map<String,Integer> playerScore, String lastWord){
         //connection to the view
+      //  GameState gameState = new GameState();
+
+    //    Word word = new Word(lastWord);
+
+       // this.board.insertWord(word);
     }
 
     //connection to the hostServer to listen to updates

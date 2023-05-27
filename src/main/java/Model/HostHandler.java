@@ -34,6 +34,7 @@ public class HostHandler implements ClientHandler {
             String[] updatePlayer= playerScore[i].split(":");
             playerScoreMap.put(updatePlayer[0], Integer.parseInt(updatePlayer[1]));
         }
+
         guestModel.updateGameState(currentPlayerName, playerScoreMap,lastAddedWord);
 
         //scanner.close();
