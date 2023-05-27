@@ -20,11 +20,12 @@ public class GameState {
         this.lastAddedWord = lastAddedWord;
         // consider creating a singleton and update the state on every move
     }
-    public GameState(String gameState) {
+
+    /*public GameState(String gameState) {
         //create the object
         //split...
         //<currentPlayerName>#<playerName1:score1>,<playerName2:score2>#<lastWord, row, col, vertical>
-    }
+    }*/
 
     public String toString() {
 

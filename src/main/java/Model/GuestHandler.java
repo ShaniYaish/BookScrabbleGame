@@ -26,7 +26,7 @@ public class GuestHandler implements ClientHandler {
         String function = command[1];
 
         if (function == "connect") { // selected guest mode
-            Player newPlayer = new Player(playerName);
+            Player newPlayer = new Player(playerName , true);
             newPlayer.setGuest(true);
             String guestHost = command[2]; // ip
             int port = Integer.parseInt(command[3]);

@@ -15,10 +15,10 @@ public class Player {
     private Socket guestSocket;
 
 
-    public Player(String name) {
+    public Player(String name , boolean isGuest) {
         this.player_tiles = new ArrayList<>();
         this.player_name = name;
-        this.isGuest = false;
+        this.isGuest = isGuest;
         this.score = 0;
     }
 

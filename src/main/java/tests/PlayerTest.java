@@ -18,7 +18,7 @@ class PlayerTest {
     static Player player;
 
     private void PlayerTest() {
-        player = new Player("Alice");
+        player = new Player("Alice" , true);
         update_score();
         removeWordFromTiles();
         add_tile();

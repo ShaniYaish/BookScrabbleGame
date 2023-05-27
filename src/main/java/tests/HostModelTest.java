@@ -21,8 +21,8 @@ public class HostModelTest {
     public void HostModelTest() {
 
         // Add some players
-        Player player1 = new Player("Alice");
-        Player player2 = new Player("Bob");
+        Player player1 = new Player("Alice" , true);
+        Player player2 = new Player("Bob" , true);
         hostModel.getPlayers().add(player1);
         hostModel.getPlayers().add(player2);
 
@@ -75,7 +75,7 @@ public class HostModelTest {
     }
 
     public void divide_tiles(){
-        Player player3 = new Player("Eli");
+        Player player3 = new Player("Eli" , true);
         hostModel.getPlayers().add(player3);
         hostModel.divide_tiles(2);
         if(player3.getPlayer_tiles().size() != 7)
